@@ -1,9 +1,11 @@
 import { useEffect,useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteStory,getStories } from "../Services/StoryServices";
+import { useAuth } from "../Context/AuthContext";
 
 export default function StoryList(){
     const[stories,setStories] = useState([]);
+    const { isAuthenticated } = useAuth();
 
     const [loading, setLoading] = useState(true);
 
@@ -40,6 +42,11 @@ export default function StoryList(){
     return(
         <div className="max-w-4xl mx-auto mt-10">
             <h2 className="text-2xl font-bold mb-6">Stories</h2>    
+            <p className="mb-4 rounded border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+                {isAuthenticated
+                    ? "Welcome back! You are logged in."
+                    : "You are browsing as a guest."}
+            </p>
         <ul className="space-y-4">
             {stories.map((story) => (
                 <li key={story.id} className="p-4 bg-white rounded-lg shadow-md">

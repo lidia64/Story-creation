@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
-import { UseMutate } from '@tanstack/react-query';
 import {getStoryById, updateStory} from '../Services/StoryServices'
 
 export default function UpdateStory() {

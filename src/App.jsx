@@ -5,6 +5,7 @@ import AddStory from './Pages/AddStory'
 import StoryDetails from './Pages/StoryDetails'
 import ViewStory from './Pages/ViewStory'
 import UpdateStory from './Pages/UpdateStory'
+import Login from './Pages/Login'
 import './App.css'
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/Home" element={<Home />} />
           <Route path="/AddStory" element={<AddStory />} />
           <Route path="/ViewStory" element={<ViewStory />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/UpdateStory/:id" element={<UpdateStory />} />
           <Route path="/Story/:id" element={<StoryDetails />} />
         </Routes>

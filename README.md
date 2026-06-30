@@ -1,63 +1,118 @@
-# Stories CRUD App (React + Vite)
+# Stories CRUD App With Authentication
 
-A simple “Stories” CRUD web application built with React + Vite. It lets you **create**, **view**, **update**, and **delete** stories using a REST API.
+This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now log in, store an access token, share auth state with Context API, and log out.
 
-## Tech stack
+## Features
+
+- Story CRUD operations with Axios
+- Login page using TanStack Query `useMutation`
+- Authentication service for the login API request
+- Auth Context for `token`, `user`, `login`, `logout`, and `isAuthenticated`
+- Local Storage persistence for token and user email
+- Navbar that changes between guest and logged-in states
+- Story list authentication status message
+
+## Tech Stack
 
 - React + Vite
-- React Router (pages / navigation)
-- TanStack Query (imported in the app)
-- Axios (API calls)
-- Tailwind-style utility classes (used in components)
+- React Router
+- TanStack Query
+- React Context API
+- Axios
+- Tailwind CSS utility classes
 
-## API
+## Project Structure
 
-Base URL is hardcoded in: `src/Services/StoryServices.jsx`
+```text
+src
+|-- Components
+|   |-- Navbar.jsx
+|   |-- Footer.jsx
+|   `-- DeleteStory.jsx
+|-- Context
+|   `-- AuthContext.jsx
+|-- Pages
+|   |-- AddStory.jsx
+|   |-- Home.jsx
+|   |-- Login.jsx
+|   |-- StoryDetails.jsx
+|   |-- UpdateStory.jsx
+|   `-- ViewStory.jsx
+|-- Services
+|   |-- StoryServices.jsx
+|   `-- authService.js
+|-- App.jsx
+|-- main.jsx
+`-- index.css
+```
+
+## APIs
+
+Story API base URL in `src/Services/StoryServices.jsx`:
 
 ```js
 https://sms-express-app-1-production.up.railway.app/api/stories
 ```
 
-### Endpoints
+Authentication API base URL in `src/Services/authService.js`:
 
-- **Create story**: `POST /api/stories`
-  - Body:
-    ```json
-    {
-      "authorName": "...",
-      "content": "..."
-    }
-    ```
+```js
+https://sms-express-app-1-production-a843.up.railway.app
+```
 
-- **Get all stories**: `GET /api/stories`
+Login request:
 
-- **Get story by id**: `GET /api/stories/:storyId`
+```http
+POST /login
+```
 
-- **Update story**: `PUT /api/stories/:storyId`
-  - Body:
-    ```json
-    {
-      "authorName": "...",
-      "content": "..."
-    }
-    ```
+Body:
 
-- **Delete story**: `DELETE /api/stories/:storyId`
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
 
-## Getting started
+Expected response:
+
+```json
+{
+  "accessToken": "token-value"
+}
+```
+
+## Authentication Flow
+
+1. The user opens `/login`.
+2. The user enters an email and password.
+3. `Login.jsx` sends the credentials through React Query.
+4. `authService.js` posts the credentials to the backend.
+5. On success, `AuthContext` stores the access token and user email in Local Storage.
+6. The Navbar updates to show `Welcome back, user@example.com` and a Logout button.
+7. Logout clears Local Storage and returns the app to Guest User state.
+
+## Routes
+
+- `/` and `/Home` - Home page
+- `/ViewStory` - View all stories
+- `/Story/:id` - View one story
+- `/AddStory` - Add a story
+- `/UpdateStory/:id` - Update a story
+- `/login` - Login page
+
+## Getting Started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Open the URL shown in your terminal (typically `http://localhost:5173`).
+Open the URL shown in your terminal, usually `http://localhost:5173`.
 
-## App pages (high level)
+## Build
 
-- **Home / List**: shows existing stories (uses `getStories()`)
-- **AddStory**: form to create a story (`src/Pages/AddStory.jsx`)
-- **StoryDetails / View**: shows story details
-- **UpdateStory**: edit author/content for a story (`src/Pages/UpdateStory.jsx`)
-- **DeleteStory**: deletes a story (`src/Components/DeleteStory.jsx`)
-
+```bash
+npm run build
+```
