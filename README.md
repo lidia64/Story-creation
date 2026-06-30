@@ -1,6 +1,6 @@
 # Stories CRUD App With Authentication
 
-This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now log in, store an access token, share auth state with Context API, and log out.
+This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now log in, store an access token, share auth state with Context API, and log out
 
 ## Features
 
