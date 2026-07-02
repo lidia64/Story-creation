@@ -29,6 +29,7 @@ export default function Navbar() {
                     <NavLink to="/AddStory" className={linkClass}>AddStory</NavLink>
                     <NavLink to="/ViewStory" className={linkClass}>ViewStory</NavLink>
                     {!isAuthenticated && <NavLink to="/login" className={linkClass}>Login</NavLink>}
+                    {!isAuthenticated && <NavLink to="/register" className={linkClass}>Register</NavLink>}
                 </div>
                 <div className="flex flex-wrap items-center gap-3 text-sm text-slate-600">
                     <span>

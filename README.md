@@ -1,12 +1,13 @@
 # Stories CRUD App With Authentication
 
-This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now log in, store an access token, share auth state with Context API, and log out
+This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now register, log in, store an access token, share auth state with Context API, and log out.
 
 ## Features
 
 - Story CRUD operations with Axios
 - Login page using TanStack Query `useMutation`
-- Authentication service for the login API request
+- Register page using TanStack Query `useMutation`
+- Authentication service for register and login API requests
 - Auth Context for `token`, `user`, `login`, `logout`, and `isAuthenticated`
 - Local Storage persistence for token and user email
 - Navbar that changes between guest and logged-in states
@@ -35,6 +36,7 @@ src
 |   |-- AddStory.jsx
 |   |-- Home.jsx
 |   |-- Login.jsx
+|   |-- Register.jsx
 |   |-- StoryDetails.jsx
 |   |-- UpdateStory.jsx
 |   `-- ViewStory.jsx
@@ -59,6 +61,23 @@ Authentication API base URL in `src/Services/authService.js`:
 ```js
 https://sms-express-app-1-production-a843.up.railway.app
 ```
+
+Register request:
+
+```http
+POST /register
+```
+
+Body:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "password123"
+}
+```
+
+If the backend returns an `accessToken`, the app logs the new user in immediately. If no token is returned, the user is sent to the login page.
 
 Login request:
 
@@ -85,13 +104,14 @@ Expected response:
 
 ## Authentication Flow
 
-1. The user opens `/login`.
-2. The user enters an email and password.
-3. `Login.jsx` sends the credentials through React Query.
-4. `authService.js` posts the credentials to the backend.
-5. On success, `AuthContext` stores the access token and user email in Local Storage.
-6. The Navbar updates to show `Welcome back, user@example.com` and a Logout button.
-7. Logout clears Local Storage and returns the app to Guest User state.
+1. A new user opens `/register`.
+2. `Register.jsx` validates the form and sends the email and password through React Query.
+3. `authService.js` posts the registration data to the backend.
+4. If registration returns an access token, `AuthContext` stores the token and user email in Local Storage.
+5. Existing users open `/login` and submit their credentials through React Query.
+6. On successful login, `AuthContext` stores the access token and user email in Local Storage.
+7. The Navbar updates to show `Welcome back, user@example.com` and a Logout button.
+8. Logout clears Local Storage and returns the app to Guest User state.
 
 ## Routes
 
@@ -101,6 +121,7 @@ Expected response:
 - `/AddStory` - Add a story
 - `/UpdateStory/:id` - Update a story
 - `/login` - Login page
+- `/register` - Register page
 
 ## Getting Started
 

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../Context/AuthContext";
 import { loginUser } from "../Services/authService";
 
@@ -76,6 +76,13 @@ export default function Login() {
           {loginMutation.isPending ? "Logging in..." : "Login"}
         </button>
       </form>
+
+      <p className="mt-4 text-center text-sm text-slate-600">
+        Need an account?{" "}
+        <Link to="/register" className="font-semibold text-blue-700 hover:text-blue-900">
+          Register
+        </Link>
+      </p>
     </section>
   );
 }
