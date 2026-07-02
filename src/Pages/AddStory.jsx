@@ -1,89 +1,99 @@
-import {useState} from 'react'
-import {createStory} from '../Services/StoryServices'
+import { useState } from "react";
+import { createStory } from "../Services/StoryServices";
+import { useNavigate } from "react-router-dom";
 
 export default function AddStory() {
-    const [Author, setAuthor] = useState('');
-    const [Content, setContent] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
+  const [author, setAuthor] = useState("");
+  const [content, setContent] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+    setSuccessMessage("");
 
-    const HandleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
+    if (!author.trim() || !content.trim()) {
+      setErrorMessage("Please fill in both author and content.");
+      return;
+    }
 
-        if (!Author.trim() || !Content.trim()) {
-            setErrorMessage('Please fill in author and content.');
-            return;
-        }
+    try {
+      setIsSubmitting(true);
+      await createStory({ authorName: author.trim(), content: content.trim() });
+      setSuccessMessage("Story created! Redirecting...");
+      setTimeout(() => navigate("/ViewStory"), 1200);
+    } catch (error) {
+      const message =
+        error.response?.data?.error ||
+        error.response?.data?.message ||
+        "Failed to create story. Please try again.";
+      setErrorMessage(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-        const storyData = {
-            authorName: Author.trim(),
-            content: Content.trim()
-        };
+  return (
+    <div className="py-8">
+      <form
+        onSubmit={handleSubmit}
+        className="mx-auto max-w-xl rounded-2xl border border-slate-200 bg-white p-8 shadow-md"
+      >
+        <div className="mb-6">
+          <span className="text-xs font-semibold uppercase tracking-widest text-violet-600">New Story</span>
+          <h2 className="mt-1 text-2xl font-bold text-slate-900">Write Your Story</h2>
+        </div>
 
-        try {
-            setIsSubmitting(true);
-            const response = await createStory(storyData);
-            console.log('Story created:', response);
-            alert('Story created successfully!');
-            setAuthor('');
-            setContent('');
-        }
-        catch (error) {
-            console.error('Error creating story:', error);
-            const message =
-                error.response?.data?.error ||
-                error.response?.data?.message ||
-                error.message ||
-                'Failed to create story. Please try again.';
+        {errorMessage && (
+          <p className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+            {errorMessage}
+          </p>
+        )}
+        {successMessage && (
+          <p className="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+            {successMessage}
+          </p>
+        )}
 
-            setErrorMessage(message);
-        }
-        finally {
-            setIsSubmitting(false);
-        }
-    };
-    return(
-        <form onSubmit={HandleSubmit} className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-6">Add a New Story</h2>
-            {errorMessage && (
-                <p className="mb-4 rounded border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">
-                    {errorMessage}
-                </p>
-            )}
-            <div className="mb-4"> 
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="author">
-                    Author
-                </label>
-                <input
-                    id="author"
-                    type="text"
-                    value={Author}
-                    onChange={(e) => setAuthor(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Enter author name"
-                />
-            </div>
-            <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="content">
-                    Content
-                </label>
-                <textarea
-                    id="content"
-                    value={Content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                    placeholder="Enter story content"
-                />
-            </div>
-            <button
-                type="submit"
-                disabled={isSubmitting}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-                {isSubmitting ? 'Creating...' : 'Create Story'}
-            </button>
-        </form>
-    );
+        <div className="mb-4">
+          <label className="mb-1.5 block text-sm font-semibold text-slate-700" htmlFor="author">
+            Author Name
+          </label>
+          <input
+            id="author"
+            type="text"
+            value={author}
+            onChange={(e) => setAuthor(e.target.value)}
+            placeholder="Your name"
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100"
+          />
+        </div>
+
+        <div className="mb-6">
+          <label className="mb-1.5 block text-sm font-semibold text-slate-700" htmlFor="content">
+            Story Content
+          </label>
+          <textarea
+            id="content"
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Once upon a time..."
+            rows={6}
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-slate-900 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-100 resize-none"
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full rounded-lg bg-violet-600 px-4 py-2.5 font-semibold text-white transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:bg-violet-300"
+        >
+          {isSubmitting ? "Publishing..." : "Publish Story"}
+        </button>
+      </form>
+    </div>
+  );
 }

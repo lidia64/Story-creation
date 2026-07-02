@@ -1,18 +1,23 @@
-https://story-creation-rose.vercel.app/register
 # Stories CRUD App With Authentication
 
-This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now register, log in, store an access token, share auth state with Context API, and log out.
+A React + Vite application where users can register, verify their email, log in, and manage stories with full CRUD operations. Unauthenticated users can browse and read stories but cannot create, edit, or delete them.
+
+## Live Demo
+
+[https://story-creation-rose.vercel.app](https://story-creation-rose.vercel.app)
 
 ## Features
 
-- Story CRUD operations with Axios
-- Login page using TanStack Query `useMutation`
-- Register page using TanStack Query `useMutation`
-- Authentication service for register and login API requests
+- Landing page with hero section, stats, features grid, image strip, and CTA
+- Story CRUD operations with Axios (all on the same backend domain)
+- Two-step registration: sign up → verify email with a 6-digit OTP
+- Login with inline error messages (including unverified email guidance)
 - Auth Context for `token`, `user`, `login`, `logout`, and `isAuthenticated`
 - Local Storage persistence for token and user email
-- Navbar that changes between guest and logged-in states
-- Story list authentication status message
+- Protected routes — guests are redirected to `/login` for write operations
+- Guests can only view and read stories; Edit and Delete are hidden
+- Navbar adapts between guest and logged-in states
+- Violet/purple design theme throughout
 
 ## Tech Stack
 
@@ -21,7 +26,7 @@ This React + Vite project fulfills the assignment to integrate authentication in
 - TanStack Query
 - React Context API
 - Axios
-- Tailwind CSS utility classes
+- Tailwind CSS
 
 ## Project Structure
 
@@ -51,25 +56,37 @@ src
 
 ## APIs
 
-Story API base URL in `src/Services/StoryServices.jsx`:
+Both the Stories API and the Auth API share the same base domain:
 
-```js
-https://sms-express-app-1-production.up.railway.app/api/stories
 ```
-
-Authentication API base URL in `src/Services/authService.js`:
-
-```js
 https://sms-express-app-1-production-a843.up.railway.app
 ```
 
-Register request:
+### Stories
 
-```http
-POST /register
+| Method | Endpoint | Auth required |
+|--------|----------|---------------|
+| GET | `/api/stories` | No |
+| GET | `/api/stories/:id` | No |
+| POST | `/api/stories` | Yes |
+| PUT | `/api/stories/:id` | Yes |
+| DELETE | `/api/stories/:id` | Yes |
+
+Authenticated requests send the token as:
+
+```
+Authorization: Bearer <accessToken>
 ```
 
-Body:
+### Auth
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register a new user |
+| POST | `/api/auth/verify-email` | Verify email with OTP |
+| POST | `/api/auth/login` | Login and receive access token |
+
+Register body:
 
 ```json
 {
@@ -78,15 +95,16 @@ Body:
 }
 ```
 
-If the backend returns an `accessToken`, the app logs the new user in immediately. If no token is returned, the user is sent to the login page.
+Verify email body:
 
-Login request:
-
-```http
-POST /login
+```json
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
 ```
 
-Body:
+Login body:
 
 ```json
 {
@@ -95,7 +113,7 @@ Body:
 }
 ```
 
-Expected response:
+Login response:
 
 ```json
 {
@@ -105,24 +123,27 @@ Expected response:
 
 ## Authentication Flow
 
-1. A new user opens `/register`.
-2. `Register.jsx` validates the form and sends the email and password through React Query.
-3. `authService.js` posts the registration data to the backend.
-4. If registration returns an access token, `AuthContext` stores the token and user email in Local Storage.
-5. Existing users open `/login` and submit their credentials through React Query.
-6. On successful login, `AuthContext` stores the access token and user email in Local Storage.
-7. The Navbar updates to show `Welcome back, user@example.com` and a Logout button.
-8. Logout clears Local Storage and returns the app to Guest User state.
+1. User opens `/register` and submits email and password.
+2. Backend sends a 6-digit OTP to the email address.
+3. User enters the OTP in the inline verification step on the same page.
+4. On successful verification, user is redirected to `/login`.
+5. User logs in — `AuthContext` stores the access token and email in Local Storage.
+6. Navbar updates to show the user's email and a Logout button.
+7. Logout clears Local Storage and returns the app to guest state.
 
 ## Routes
 
-- `/` and `/Home` - Home page
-- `/ViewStory` - View all stories
-- `/Story/:id` - View one story
-- `/AddStory` - Add a story
-- `/UpdateStory/:id` - Update a story
-- `/login` - Login page
-- `/register` - Register page
+| Path | Access | Description |
+|------|--------|-------------|
+| `/` `/Home` | Public | Landing page |
+| `/ViewStory` | Public | Browse all stories |
+| `/Story/:id` | Public | Read one story |
+| `/login` | Public | Login page |
+| `/register` | Public | Register + OTP verify |
+| `/AddStory` | Protected | Create a story |
+| `/UpdateStory/:id` | Protected | Edit a story |
+
+Protected routes redirect unauthenticated users to `/login`.
 
 ## Getting Started
 
