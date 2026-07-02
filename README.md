@@ -1,3 +1,4 @@
+https://story-creation-rose.vercel.app/register
 # Stories CRUD App With Authentication
 
 This React + Vite project fulfills the assignment to integrate authentication into an existing Story CRUD application. Users can create, view, update, and delete stories, and they can now register, log in, store an access token, share auth state with Context API, and log out.
